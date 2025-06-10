@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Attractive Candle Animation</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      background: linear-gradient(to bottom, #0d0d0d, #1a1a1a);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
+    }
+    .candle-container {
+      position: relative;
+      width: 100px;
+      height: 300px;
+    }
+    .candle {
+      position: absolute;
+      bottom: 0;
+      width: 60px;
+      height: 200px;
+      background: linear-gradient(to bottom, #ffd9b3, #ffb366);
+      border-radius: 10px;
+      box-shadow: 0 0 30px rgba(255, 140, 0, 0.5);
+      left: 50%;
+      transform: translateX(-50%);
+    }
+    .wick {
+      position: absolute;
+      top: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 4px;
+      height: 10px;
+      background-color: black;
+      z-index: 10;
+      border-radius: 2px;
+    }
+    .flame {
+      position: absolute;
+      top: -60px;
+      left: 50%;
+      width: 20px;
+      height: 60px;
+      background: radial-gradient(circle at 50% 30%, #ffeb99, #ff8000);
+      border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+      transform: translateX(-50%) scaleY(1);
+      animation: flicker 0.15s infinite;
+      z-index: 5;
+      opacity: 0;
+    }
+    @keyframes flicker {
+      0% {
+        transform: translateX(-50%) scaleY(1);
+        opacity: 0.95;
+      }
+      50% {
+        transform: translateX(-48%) scaleY(1.05);
+        opacity: 0.85;
+      }
+      100% {
+        transform: translateX(-50%) scaleY(1);
+        opacity: 1;
+      }
+    }
+    .glow {
+      position: absolute;
+      top: -80px;
+      left: 50%;
+      width: 100px;
+      height: 100px;
+      background: radial-gradient(circle, rgba(255, 204, 0, 0.3), transparent);
+      transform: translateX(-50%);
+      z-index: 1;
+      animation: pulse 1s infinite;
+      opacity: 0;
+    }
+    @keyframes pulse {
+      0%, 100% {
+        transform: translateX(-50%) scale(1);
+        opacity: 0.3;
+      }
+      50% {
+        transform: translateX(-50%) scale(1.2);
+        opacity: 0.5;
+      }
+    }
+    .candle-base {
+      position: absolute;
+      bottom: -20px;
+      width: 100px;
+      height: 30px;
+      background: #333;
+      border-radius: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      box-shadow: 0 5px 10px rgba(0, 0, 0, 0.6);
+    }
+  </style>
+</head>
+<body>
+  <div class="candle-container">
+    <div class="candle">
+      <div class="wick"></div>
+      <div class="flame" id="flame"></div>
+      <div class="glow" id="glow"></div>
+    </div>
+    <div class="candle-base"></div>
+  </div>
+  <script>
+    // Animation trigger logic
+    window.onload = () => {
+      const flame = document.getElementById("flame");
+      const glow = document.getElementById("glow");
+
+      setTimeout(() => {
+        flame.style.opacity = 1;
+        glow.style.opacity = 1;
+      }, 1000);
+    };
+
+    // Extended flame dynamics
+    let flame = document.getElementById("flame");
+    let flickerSpeed = 150;
+    let maxOffset = 3;
+
+    function animateFlame() {
+      let offsetX = Math.random() * maxOffset - maxOffset / 2;
+      let scaleY = 1 + Math.random() * 0.1;
+      flame.style.transform = `translateX(${offsetX}px) scaleY(${scaleY})`;
+    }
+
+    setInterval(animateFlame, flickerSpeed);
+
+    // Add dripping wax effect
+    const candle = document.querySelector(".candle");
+    let waxDrops = [];
+
+    function createWaxDrop() {
+      const drop = document.createElement("div");
+      drop.classList.add("wax-drop");
+      drop.style.position = "absolute";
+      drop.style.width = "5px";
+      drop.style.height = "10px";
+      drop.style.borderRadius = "50%";
+      drop.style.backgroundColor = "#ffcc99";
+      drop.style.left = `${Math.random() * 40 + 10}px`;
+      drop.style.top = `0px`;
+      candle.appendChild(drop);
+      waxDrops.push({ element: drop, y: 0 });
+    }
+
+    function updateWaxDrops() {
+      waxDrops.forEach((drop, index) => {
+        drop.y += 1;
+        drop.element.style.top = `${drop.y}px`;
+        if (drop.y > 190) {
+          candle.removeChild(drop.element);
+          waxDrops.splice(index, 1);
+        }
+      });
+    }
+
+    setInterval(() => {
+      createWaxDrop();
+    }, 800);
+
+    setInterval(updateWaxDrops, 30);
+  </script>
+</body>
+</html>
